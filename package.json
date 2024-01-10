@@ -1,0 +1,28 @@
+{
+  "name": "lute-connect",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "types": "main.d.ts",
+  "scripts": {
+    "build": "tsc --declaration --declarationDir ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/acfunk/lute-connect.git"
+  },
+  "keywords": [
+    "algorand",
+    "ledger",
+    "wallet"
+  ],
+  "author": "Andrew Funk",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/acfunk/lute-connect/issues"
+  },
+  "homepage": "https://github.com/acfunk/lute-connect#readme",
+  "devDependencies": {
+    "typescript": "^5.3.3"
+  }
+}
