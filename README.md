@@ -23,7 +23,7 @@ const APP_NAME = "YourAppName";
 ### Connect to Lute
 
 ```js
-/* Warning: Browser will block pop-up if user doesn't trigger lute.connect() with a button interaction */
+// Warning: Browser will block pop-up if user doesn't trigger lute.connect() with a button click
 async function luteConnect() {
   try {
     const genesis = await algodClient.genesis().do();
@@ -39,7 +39,7 @@ async function luteConnect() {
 ### Sign transaction
 
 ```js
-/* Warning: Browser will block pop-up if user doesn't trigger lute.signTxns() with a button interaction */
+// Warning: Browser will block pop-up if user doesn't trigger lute.signTxns() with a button click
 async function signTransactions(txns) {
   try {
     const opts = { _luteSiteName: APP_NAME };
