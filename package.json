@@ -1,7 +1,6 @@
 {
   "name": "lute-connect",
   "version": "1.0.1",
-  "description": "",
   "main": "index.js",
   "types": "main.d.ts",
   "scripts": {
