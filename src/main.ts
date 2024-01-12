@@ -58,7 +58,7 @@ export default class Lute {
     return new Promise((resolve, reject) => {
       const win = open(`${BASE_URL}/connect`, siteName, PARAMS);
       window.addEventListener("message", messageHandler);
-      async function messageHandler(event: any) {
+      function messageHandler(event: any) {
         if (event.origin !== BASE_URL) return;
         switch (event.data.action) {
           case "ready": {
@@ -100,7 +100,7 @@ export default class Lute {
   signTxns(
     txns: WalletTransaction[],
     opts: SignTxnsOpts
-  ): Promise<(SignedTxnStr | null)[] | SignTxnsError> {
+  ): Promise<(Uint8Array | null)[] | SignTxnsError> {
     return new Promise((resolve, reject) => {
       if (!txns.length) {
         reject({
