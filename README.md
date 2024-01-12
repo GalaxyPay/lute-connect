@@ -15,20 +15,19 @@ npm i lute-connect
 ### Quick start
 
 ```js
-import Lute from "lute-connect";
-const lute = new Lute();
-const APP_NAME = "YourAppName";
+import LuteConnect from "lute-connect";
+const lute = new LuteConnect("YourAppName");
 ```
 
 ### Connect to Lute
 
 ```js
 // Warning: Browser will block pop-up if user doesn't trigger lute.connect() with a button click
-async function luteConnect() {
+async function connect() {
   try {
     const genesis = await algodClient.genesis().do();
     const genesisID = `${genesis.network}-${genesis.id}`;
-    const addresses = await lute.connect(genesisID, APP_NAME);
+    const addresses = await lute.connect(genesisID);
     // handle user address selection and storage
   } catch (err) {
     console.error(err);
@@ -42,8 +41,7 @@ async function luteConnect() {
 // Warning: Browser will block pop-up if user doesn't trigger lute.signTxns() with a button click
 async function signTransactions(txns) {
   try {
-    const opts = { _luteSiteName: APP_NAME };
-    const signedTxns = await lute.signTxns(txns, opts);
+    const signedTxns = await lute.signTxns(txns);
     // handle signedTxns (e.g. submit to algodClient)
   } catch (err) {
     console.error(err);

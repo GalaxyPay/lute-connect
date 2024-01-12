@@ -53,10 +53,15 @@ export interface SignTxnsError extends Error {
 const BASE_URL = "https://lute.app";
 const PARAMS = "width=500,height=750,left=100,top=100";
 
-export default class Lute {
-  connect(genesisId: string, siteName: string): Promise<Address[]> {
+export default class LuteConnect {
+  siteName: string;
+  constructor(siteName: string) {
+    this.siteName = siteName;
+  }
+
+  connect(genesisId: string): Promise<Address[]> {
     return new Promise((resolve, reject) => {
-      const win = open(`${BASE_URL}/connect`, siteName, PARAMS);
+      const win = open(`${BASE_URL}/connect`, this.siteName, PARAMS);
       window.addEventListener("message", messageHandler);
       function messageHandler(event: any) {
         if (event.origin !== BASE_URL) return;
@@ -98,8 +103,7 @@ export default class Lute {
   }
 
   signTxns(
-    txns: WalletTransaction[],
-    opts: SignTxnsOpts
+    txns: WalletTransaction[]
   ): Promise<(Uint8Array | null)[] | SignTxnsError> {
     return new Promise((resolve, reject) => {
       if (!txns.length) {
@@ -108,7 +112,7 @@ export default class Lute {
           message: "Empty Transaction Array",
         });
       }
-      const win = open(`${BASE_URL}/sign`, opts._luteSiteName, PARAMS);
+      const win = open(`${BASE_URL}/sign`, this.siteName, PARAMS);
       window.addEventListener("message", messageHandler);
       function messageHandler(event: any) {
         if (event.origin !== BASE_URL) return;

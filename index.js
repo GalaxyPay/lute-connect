@@ -1,1 +1,1 @@
-module.exports = require("./lib/main");
+export { default } from "./lib/main";
