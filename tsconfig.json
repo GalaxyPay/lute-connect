@@ -1,9 +1,10 @@
 {
   "compilerOptions": {
-    "outDir": "./lib/",
+    "outDir": "dist",
     "sourceMap": false,
     "noImplicitAny": false,
-    "target": "esnext"
+    "target": "esnext",
+    "declaration": true
   },
   "include": ["src/**/*"]
 }

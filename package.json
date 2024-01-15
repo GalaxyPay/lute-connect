@@ -1,10 +1,10 @@
 {
   "name": "lute-connect",
-  "version": "1.0.4",
-  "main": "index.js",
-  "types": "main.d.ts",
+  "version": "1.0.5",
+  "main": "dist/index.js",
+  "types": "dist/main.d.ts",
   "scripts": {
-    "build": "tsc --declaration --declarationDir ."
+    "build": "rollup --config"
   },
   "repository": {
     "type": "git",
@@ -22,6 +22,9 @@
   },
   "homepage": "https://github.com/acfunk/lute-connect#readme",
   "devDependencies": {
+    "@rollup/plugin-typescript": "^11.1.6",
+    "rollup": "^4.9.5",
+    "tslib": "^2.6.2",
     "typescript": "^5.3.3"
   }
 }
