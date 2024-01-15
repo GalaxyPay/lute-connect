@@ -1,8 +1,8 @@
 {
   "name": "lute-connect",
-  "version": "1.0.5",
-  "main": "dist/index.js",
-  "types": "dist/main.d.ts",
+  "version": "1.0.6",
+  "main": "./dist/main.js",
+  "types": "./dist/main.d.ts",
   "scripts": {
     "build": "rollup --config"
   },
