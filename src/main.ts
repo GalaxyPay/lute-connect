@@ -131,6 +131,15 @@ export default class LuteConnect {
             resolve(event.data.txns);
             break;
           }
+          case "msig": {
+            win?.close();
+            window.removeEventListener("message", messageHandler);
+            reject({
+              code: 4100,
+              message: "Not Signed, Sent to Multi-Sig",
+            });
+            break;
+          }
           case "error": {
             win?.close();
             window.removeEventListener("message", messageHandler);
