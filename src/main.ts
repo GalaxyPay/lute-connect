@@ -45,6 +45,11 @@ export interface SignTxnsOpts {
   _luteSiteName: string;
 }
 
+export interface SignTxnsError extends Error {
+  code: number;
+  data?: any;
+}
+
 const BASE_URL = "https://lute.app";
 const PARAMS = "width=500,height=750,left=100,top=100";
 
