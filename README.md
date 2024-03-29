@@ -1,6 +1,6 @@
 ## Overview
 
-Lute Connect is a Javascript library to securely sign transactions with [Lute](https://lute.app), an Algorand, Ledger-only web wallet.
+Lute Connect is a Javascript library to securely sign transactions with [Lute](https://lute.app), an Algorand web wallet.
 
 ## Installation
 
@@ -16,7 +16,7 @@ npm i lute-connect
 
 ```js
 import LuteConnect from "lute-connect";
-const lute = new LuteConnect("YourAppName");
+const lute = new LuteConnect("<YOUR_SITE_NAME>");
 ```
 
 ### Connect to Lute
