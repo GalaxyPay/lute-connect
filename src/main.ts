@@ -65,6 +65,7 @@ export default class LuteConnect {
       window.addEventListener("message", messageHandler);
       function messageHandler(event: any) {
         if (event.origin !== BASE_URL) return;
+        if (event.data.debug) console.log("[Lute Debug]", event.data);
         switch (event.data.action) {
           case "ready": {
             const message = {
@@ -114,6 +115,7 @@ export default class LuteConnect {
       window.addEventListener("message", messageHandler);
       function messageHandler(event: any) {
         if (event.origin !== BASE_URL) return;
+        if (event.data.debug) console.log("[Lute Debug]", event.data);
         switch (event.data.action) {
           case "ready": {
             const message = {
@@ -127,15 +129,6 @@ export default class LuteConnect {
             win?.close();
             window.removeEventListener("message", messageHandler);
             resolve(event.data.txns);
-            break;
-          }
-          case "msig": {
-            win?.close();
-            window.removeEventListener("message", messageHandler);
-            reject({
-              code: 4100,
-              message: "Not Signed, Sent to Multi-Sig",
-            });
             break;
           }
           case "error": {
