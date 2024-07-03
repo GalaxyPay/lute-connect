@@ -45,9 +45,16 @@ export interface SignTxnsOpts {
   _luteSiteName: string;
 }
 
-export interface SignTxnsError extends Error {
+export class SignTxnsError extends Error {
   code: number;
   data?: any;
+
+  constructor(message: string, code: number, data?: any) {
+    super(message);
+    this.name = 'SignTxnsError';
+    this.code = code;
+    this.data = data;
+  }
 }
 
 const BASE_URL = "https://lute.app";
@@ -84,17 +91,13 @@ export default class LuteConnect {
           case "error": {
             win?.close();
             window.removeEventListener("message", messageHandler);
-            reject({
-              message: event.data.message,
-            });
+            reject(new Error(event.data.message));
             break;
           }
           case "close": {
             if (!win?.closed) {
               window.removeEventListener("message", messageHandler);
-              reject({
-                message: "Operation Canceled",
-              });
+              reject(new Error("Operation Cancelled"));
             }
             break;
           }
@@ -106,10 +109,7 @@ export default class LuteConnect {
   signTxns(txns: WalletTransaction[]): Promise<(Uint8Array | null)[]> {
     return new Promise((resolve, reject) => {
       if (!txns.length) {
-        reject({
-          code: 4300,
-          message: "Empty Transaction Array",
-        });
+        reject(new SignTxnsError("Empty Transaction Array", 4300));
       }
       const win = open(`${BASE_URL}/sign`, this.siteName, PARAMS);
       window.addEventListener("message", messageHandler);
@@ -134,19 +134,13 @@ export default class LuteConnect {
           case "error": {
             win?.close();
             window.removeEventListener("message", messageHandler);
-            reject({
-              code: event.data.code || 4300,
-              message: event.data.message,
-            });
+            reject(new SignTxnsError(event.data.message, event.data.code || 4300));
             break;
           }
           case "close": {
             if (!win?.closed) {
               window.removeEventListener("message", messageHandler);
-              reject({
-                code: 4001,
-                message: "User Rejected Request",
-              });
+              reject(new SignTxnsError("User Rejected Request", 4100));
             }
             break;
           }
