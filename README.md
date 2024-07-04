@@ -6,7 +6,7 @@ Lute Connect is a Javascript library to securely sign transactions with [Lute](h
 
 The package can be installed via npm:
 
-```
+```bash
 npm i lute-connect
 ```
 
@@ -29,13 +29,14 @@ async function connect() {
     const genesisID = `${genesis.network}-${genesis.id}`;
     const addresses = await lute.connect(genesisID);
     // handle user address selection and storage
-  } catch (err) {
-    console.error(err);
+  } catch (err: any) {
+    console.error(`[LuteWallet] Error connecting: ${err.message}`);
+    throw err;
   }
 }
 ```
 
-### Sign transaction
+### Sign transactions
 
 ```js
 // Warning: Browser will block pop-up if user doesn't trigger lute.signTxns() with a button click
@@ -43,8 +44,14 @@ async function signTransactions(txns) {
   try {
     const signedTxns = await lute.signTxns(txns);
     // handle signedTxns (e.g. submit to algodClient)
-  } catch (err) {
-    console.error(err);
+  } catch (err: any) {
+    console.error(
+      '[LuteWallet] Error signing transactions: ' +
+        (err instanceof SignTxnsError
+          ? `${err.message} (code: ${err.code})`
+          : err.message)
+    );
+    throw err;
   }
 }
 ```
