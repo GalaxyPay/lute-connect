@@ -57,7 +57,7 @@ export class SignTxnsError extends Error {
   }
 }
 
-const BASE_URL = "https://localhost:3031";
+const BASE_URL = "https://lute.app";
 const PARAMS = "width=500,height=750,left=100,top=100";
 const EXT_ID = "gnkpmbidijfabfbfbnmccfmimohfpgnn";
 
