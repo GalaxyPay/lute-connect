@@ -57,9 +57,11 @@ export class SignTxnsError extends Error {
   }
 }
 
+const left = 100 + window.screenX;
+const top = 100 + window.screenY;
+const PARAMS = `width=500,height=750,left=${left},top=${top}`;
 const BASE_URL = "https://lute.app";
-const PARAMS = "width=500,height=750,left=100,top=100";
-const EXT_ID = "gnkpmbidijfabfbfbnmccfmimohfpgnn";
+const EXT_ID = "kiaoohollfkjhikdifohdckeidckokjh";
 
 export default class LuteConnect {
   siteName: string;
@@ -85,7 +87,9 @@ export default class LuteConnect {
       let win: any;
       if (useExt) {
         window.dispatchEvent(
-          new CustomEvent("connect", { detail: { genesisId } })
+          new CustomEvent("lute-connect", {
+            detail: { action: "connect", genesisId },
+          })
         );
       } else {
         win = open(`${BASE_URL}/connect`, this.siteName, PARAMS);
@@ -123,7 +127,9 @@ export default class LuteConnect {
       let win: any;
       if (useExt) {
         window.dispatchEvent(
-          new CustomEvent("sign-txns", { detail: { txns } })
+          new CustomEvent("lute-connect", {
+            detail: { action: "sign", txns },
+          })
         );
       } else {
         win = open(`${BASE_URL}/sign`, this.siteName, PARAMS);
