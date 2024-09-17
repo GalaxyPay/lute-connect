@@ -51,99 +51,111 @@ export class SignTxnsError extends Error {
 
   constructor(message: string, code: number, data?: any) {
     super(message);
-    this.name = 'SignTxnsError';
+    this.name = "SignTxnsError";
     this.code = code;
     this.data = data;
   }
 }
 
+const left = 100 + window.screenX;
+const top = 100 + window.screenY;
+const PARAMS = `width=500,height=750,left=${left},top=${top}`;
 const BASE_URL = "https://lute.app";
-const PARAMS = "width=500,height=750,left=100,top=100";
+const EXT_ID = "kiaoohollfkjhikdifohdckeidckokjh";
 
 export default class LuteConnect {
   siteName: string;
+  forceWeb: boolean = false;
+
   constructor(siteName: string) {
     this.siteName = siteName;
   }
 
+  async isExtensionInstalled() {
+    return await fetch(`chrome-extension://${EXT_ID}/assets/icon-16.png`)
+      .then(() => {
+        return true;
+      })
+      .catch(() => {
+        return false;
+      });
+  }
+
   connect(genesisId: string): Promise<Address[]> {
-    return new Promise((resolve, reject) => {
-      const win = open(`${BASE_URL}/connect`, this.siteName, PARAMS);
-      window.addEventListener("message", messageHandler);
+    return new Promise(async (resolve, reject) => {
+      const useExt = this.forceWeb ? false : await this.isExtensionInstalled();
+      let win: any;
+      if (useExt) {
+        window.dispatchEvent(
+          new CustomEvent("lute-connect", {
+            detail: { action: "connect", genesisId },
+          })
+        );
+      } else {
+        win = open(`${BASE_URL}/connect`, this.siteName, PARAMS);
+      }
+      const type = useExt ? "connect-response" : "message";
+      window.addEventListener(type, messageHandler);
       function messageHandler(event: any) {
-        if (event.origin !== BASE_URL) return;
-        if (event.data.debug) console.log("[Lute Debug]", event.data);
-        switch (event.data.action) {
-          case "ready": {
-            const message = {
-              action: "network",
-              genesisID: genesisId,
-            };
-            win?.postMessage(message, "*");
+        if (!useExt && event.origin !== BASE_URL) return;
+        const data = event.data || event.detail;
+        if (data.debug) console.log("[Lute Debug]", data);
+        switch (data.action) {
+          case "ready":
+            win?.postMessage({ action: "network", genesisID: genesisId }, "*");
             break;
-          }
-          case "connect": {
-            win?.close();
-            window.removeEventListener("message", messageHandler);
-            resolve(event.data.addrs);
+          case "connect":
+            window.removeEventListener(type, messageHandler);
+            resolve(data.addrs);
             break;
-          }
-          case "error": {
-            win?.close();
-            window.removeEventListener("message", messageHandler);
-            reject(new Error(event.data.message));
+          case "error":
+            window.removeEventListener(type, messageHandler);
+            reject(new Error(data.message));
             break;
-          }
-          case "close": {
-            if (!win?.closed) {
-              window.removeEventListener("message", messageHandler);
-              reject(new Error("Operation Cancelled"));
-            }
+          case "close":
+            window.removeEventListener(type, messageHandler);
+            reject(new Error("Operation Cancelled"));
             break;
-          }
         }
       }
     });
   }
 
   signTxns(txns: WalletTransaction[]): Promise<(Uint8Array | null)[]> {
-    return new Promise((resolve, reject) => {
-      if (!txns.length) {
-        reject(new SignTxnsError("Empty Transaction Array", 4300));
+    return new Promise(async (resolve, reject) => {
+      const useExt = this.forceWeb ? false : await this.isExtensionInstalled();
+      let win: any;
+      if (useExt) {
+        window.dispatchEvent(
+          new CustomEvent("lute-connect", {
+            detail: { action: "sign", txns },
+          })
+        );
+      } else {
+        win = open(`${BASE_URL}/sign`, this.siteName, PARAMS);
       }
-      const win = open(`${BASE_URL}/sign`, this.siteName, PARAMS);
-      window.addEventListener("message", messageHandler);
+      const type = useExt ? "sign-txns-response" : "message";
+      window.addEventListener(type, messageHandler);
       function messageHandler(event: any) {
-        if (event.origin !== BASE_URL) return;
-        if (event.data.debug) console.log("[Lute Debug]", event.data);
-        switch (event.data.action) {
-          case "ready": {
-            const message = {
-              action: "sign",
-              txns: txns,
-            };
-            win?.postMessage(message, "*");
+        if (!useExt && event.origin !== BASE_URL) return;
+        const data = event.data || event.detail;
+        if (data.debug) console.log("[Lute Debug]", data);
+        switch (data.action) {
+          case "ready":
+            win?.postMessage({ action: "sign", txns: txns }, "*");
             break;
-          }
-          case "signed": {
-            win?.close();
-            window.removeEventListener("message", messageHandler);
-            resolve(event.data.txns);
+          case "signed":
+            window.removeEventListener(type, messageHandler);
+            resolve(data.txns);
             break;
-          }
-          case "error": {
-            win?.close();
-            window.removeEventListener("message", messageHandler);
-            reject(new SignTxnsError(event.data.message, event.data.code || 4300));
+          case "error":
+            window.removeEventListener(type, messageHandler);
+            reject(new SignTxnsError(data.message, data.code || 4300));
             break;
-          }
-          case "close": {
-            if (!win?.closed) {
-              window.removeEventListener("message", messageHandler);
-              reject(new SignTxnsError("User Rejected Request", 4100));
-            }
+          case "close":
+            window.removeEventListener(type, messageHandler);
+            reject(new SignTxnsError("User Rejected Request", 4100));
             break;
-          }
         }
       }
     });
