@@ -81,14 +81,14 @@ export default class LuteConnect {
       });
   }
 
-  connect(genesisId: string): Promise<Address[]> {
+  connect(genesisID: string): Promise<Address[]> {
     return new Promise(async (resolve, reject) => {
       const useExt = this.forceWeb ? false : await this.isExtensionInstalled();
       let win: any;
       if (useExt) {
         window.dispatchEvent(
           new CustomEvent("lute-connect", {
-            detail: { action: "connect", genesisId },
+            detail: { action: "connect", genesisID },
           })
         );
       } else {
@@ -102,7 +102,7 @@ export default class LuteConnect {
         if (data.debug) console.log("[Lute Debug]", data);
         switch (data.action) {
           case "ready":
-            win?.postMessage({ action: "network", genesisID: genesisId }, "*");
+            win?.postMessage({ action: "network", genesisID }, "*");
             break;
           case "connect":
             window.removeEventListener(type, messageHandler);
