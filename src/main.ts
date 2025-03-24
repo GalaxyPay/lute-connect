@@ -67,8 +67,8 @@ export default class LuteConnect {
   siteName: string;
   forceWeb: boolean = false;
 
-  constructor(siteName: string) {
-    this.siteName = siteName;
+  constructor(siteName: string = "") {
+    this.siteName = siteName || document.title;
   }
 
   async isExtensionInstalled() {
