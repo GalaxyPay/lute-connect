@@ -16,7 +16,7 @@ npm i lute-connect
 
 ```js
 import LuteConnect from "lute-connect";
-const lute = new LuteConnect("<YOUR_SITE_NAME>");
+const lute = new LuteConnect();
 ```
 
 ### Connect to Lute
