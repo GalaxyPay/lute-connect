@@ -207,7 +207,7 @@ export default class LuteConnect {
       } else {
         win = open(`${BASE_URL}/auth`, this.siteName, PARAMS);
       }
-      const type = useExt ? "auth-response" : "message";
+      const type = useExt ? "sign-data-response" : "message";
       window.addEventListener(type, messageHandler);
       function messageHandler(event: any) {
         if (!useExt && event.origin !== BASE_URL) return;
@@ -219,7 +219,7 @@ export default class LuteConnect {
             break;
           case "signed":
             window.removeEventListener(type, messageHandler);
-            resolve(detail.response);
+            resolve(detail.signerResponse);
             break;
           case "error":
             window.removeEventListener(type, messageHandler);
