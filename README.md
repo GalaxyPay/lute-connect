@@ -66,7 +66,7 @@ async function authenticate() {
     const authenticatorData = new Uint8Array(
       createHash("sha256").update(domain).digest()
     );
-    const authRequest = {
+    const signingData = {
       data: Buffer.from("{[jsonfields....]}").toString("base64"),
       signer: publicKey,
       domain,
