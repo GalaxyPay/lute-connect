@@ -57,7 +57,7 @@ export class SignTxnsError extends Error {
   }
 }
 
-export interface StdSigData {
+export interface SignData {
   data: string;
   signer: Uint8Array;
   domain: string;
@@ -67,7 +67,7 @@ export interface StdSigData {
   signature?: Uint8Array;
 }
 
-export interface StdSigDataResponse extends StdSigData {
+export interface SignDataResponse extends SignData {
   signature: Uint8Array;
 }
 
@@ -76,7 +76,7 @@ export enum ScopeType {
   AUTH = 1,
 }
 
-export interface StdSignMetadata {
+export interface SignMetadata {
   scope: ScopeType;
   encoding: string;
 }
@@ -192,9 +192,9 @@ export default class LuteConnect {
   }
 
   signData(
-    signingData: StdSigData,
-    metadata: StdSignMetadata
-  ): Promise<StdSigDataResponse> {
+    signingData: SignData,
+    metadata: SignMetadata
+  ): Promise<SignDataResponse> {
     return new Promise(async (resolve, reject) => {
       const useExt = this.forceWeb ? false : await this.isExtensionInstalled();
       let win: any;
