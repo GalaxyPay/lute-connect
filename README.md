@@ -29,7 +29,7 @@ async function connect() {
     const genesisID = `${genesis.network}-${genesis.id}`;
     const addresses = await lute.connect(genesisID);
     // TODO: handle user address selection and storage
-  } catch (err: any) {
+  } catch (err) {
     console.error(`[LuteWallet] Error connecting: ${err.message}`);
     throw err;
   }
@@ -44,9 +44,9 @@ async function signTransactions(txns) {
   try {
     const signedTxns = await lute.signTxns(txns);
     // TODO: handle signedTxns (e.g. submit to algodClient)
-  } catch (err: any) {
+  } catch (err) {
     console.error(
-      '[LuteWallet] Error signing transactions: ' +
+      "[LuteWallet] Error signing transactions: " +
         (err instanceof SignTxnsError
           ? `${err.message} (code: ${err.code})`
           : err.message)
@@ -62,12 +62,25 @@ async function signTransactions(txns) {
 // Warning: Browser will block pop-up if user doesn't trigger lute.signData() with a button click
 async function authenticate() {
   try {
-    // TODO: define (signingData: StdSigData) and (metadata: StdSignMetadata) per ARC60
+    const domain = "arc60.io";
+    const authenticatorData = new Uint8Array(
+      createHash("sha256").update(domain).digest()
+    );
+    const authRequest = {
+      data: Buffer.from("{[jsonfields....]}").toString("base64"),
+      signer: publicKey,
+      domain,
+      authenticatorData,
+    };
+    const metadata = {
+      scope: ScopeType.AUTH,
+      encoding: "base64",
+    };
     const signerResponse = await lute.signData(signingData, metadata);
     // TODO: verify signerResponse.signature
-  } catch (err: any) {
+  } catch (err) {
     console.error(
-      '[LuteWallet] Error signing data: ' +
+      "[LuteWallet] Error signing data: " +
         (err instanceof SignDataError
           ? `${err.message} (code: ${err.code})`
           : err.message)
