@@ -57,6 +57,36 @@ export class SignTxnsError extends Error {
   }
 }
 
+export interface SignData {
+  data: string;
+  signer: Uint8Array;
+  domain: string;
+  authenticatorData: Uint8Array;
+  requestId?: string;
+  hdPath?: string;
+  signature?: Uint8Array;
+}
+
+export interface SignDataResponse extends SignData {
+  signature: Uint8Array;
+}
+
+export enum ScopeType {
+  UNKNOWN = -1,
+  AUTH = 1,
+}
+
+export interface SignMetadata {
+  scope: ScopeType;
+  encoding: string;
+}
+
+export class SignDataError extends Error {
+  constructor(public readonly code: number, message: string, _data?: any) {
+    super(message);
+  }
+}
+
 const left = 100 + window.screenX;
 const top = 100 + window.screenY;
 const PARAMS = `width=500,height=750,left=${left},top=${top}`;
@@ -138,23 +168,66 @@ export default class LuteConnect {
       window.addEventListener(type, messageHandler);
       function messageHandler(event: any) {
         if (!useExt && event.origin !== BASE_URL) return;
-        const data = event.data || event.detail;
-        if (data.debug) console.log("[Lute Debug]", data);
-        switch (data.action) {
+        const detail = event.data || event.detail;
+        if (detail.debug) console.log("[Lute Debug]", detail);
+        switch (detail.action) {
           case "ready":
-            win?.postMessage({ action: "sign", txns: txns }, "*");
+            win?.postMessage({ action: "sign", txns }, "*");
             break;
           case "signed":
             window.removeEventListener(type, messageHandler);
-            resolve(data.txns);
+            resolve(detail.txns);
             break;
           case "error":
             window.removeEventListener(type, messageHandler);
-            reject(new SignTxnsError(data.message, data.code || 4300));
+            reject(new SignTxnsError(detail.message, detail.code || 4300));
             break;
           case "close":
             window.removeEventListener(type, messageHandler);
             reject(new SignTxnsError("User Rejected Request", 4100));
+            break;
+        }
+      }
+    });
+  }
+
+  signData(
+    signingData: SignData,
+    metadata: SignMetadata
+  ): Promise<SignDataResponse> {
+    return new Promise(async (resolve, reject) => {
+      const useExt = this.forceWeb ? false : await this.isExtensionInstalled();
+      let win: any;
+      if (useExt) {
+        window.dispatchEvent(
+          new CustomEvent("lute-connect", {
+            detail: { action: "data", signingData, metadata },
+          })
+        );
+      } else {
+        win = open(`${BASE_URL}/auth`, this.siteName, PARAMS);
+      }
+      const type = useExt ? "sign-data-response" : "message";
+      window.addEventListener(type, messageHandler);
+      function messageHandler(event: any) {
+        if (!useExt && event.origin !== BASE_URL) return;
+        const detail = event.data || event.detail;
+        if (detail.debug) console.log("[Lute Debug]", detail);
+        switch (detail.action) {
+          case "ready":
+            win?.postMessage({ action: "data", signingData, metadata }, "*");
+            break;
+          case "signed":
+            window.removeEventListener(type, messageHandler);
+            resolve(detail.signerResponse);
+            break;
+          case "error":
+            window.removeEventListener(type, messageHandler);
+            reject(new SignDataError(detail.code || 4300, detail.message));
+            break;
+          case "close":
+            window.removeEventListener(type, messageHandler);
+            reject(new SignDataError(4100, "User Rejected Request"));
             break;
         }
       }

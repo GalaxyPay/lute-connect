@@ -1,6 +1,6 @@
 ## Overview
 
-Lute Connect is a Javascript library to securely sign transactions with [Lute](https://lute.app), an Algorand web wallet.
+Lute Connect is a Javascript library to securely sign transactions with Lute, an Algorand [web wallet](https://lute.app) and [Chrome extension](https://chromewebstore.google.com/detail/lute/kiaoohollfkjhikdifohdckeidckokjh).
 
 ## Installation
 
@@ -28,8 +28,8 @@ async function connect() {
     const genesis = await algodClient.genesis().do();
     const genesisID = `${genesis.network}-${genesis.id}`;
     const addresses = await lute.connect(genesisID);
-    // handle user address selection and storage
-  } catch (err: any) {
+    // TODO: handle user address selection and storage
+  } catch (err) {
     console.error(`[LuteWallet] Error connecting: ${err.message}`);
     throw err;
   }
@@ -43,11 +43,45 @@ async function connect() {
 async function signTransactions(txns) {
   try {
     const signedTxns = await lute.signTxns(txns);
-    // handle signedTxns (e.g. submit to algodClient)
-  } catch (err: any) {
+    // TODO: handle signedTxns (e.g. submit to algodClient)
+  } catch (err) {
     console.error(
-      '[LuteWallet] Error signing transactions: ' +
+      "[LuteWallet] Error signing transactions: " +
         (err instanceof SignTxnsError
+          ? `${err.message} (code: ${err.code})`
+          : err.message)
+    );
+    throw err;
+  }
+}
+```
+
+### Sign data
+
+```js
+// Warning: Browser will block pop-up if user doesn't trigger lute.signData() with a button click
+async function authenticate() {
+  try {
+    const domain = "arc60.io";
+    const authenticatorData = new Uint8Array(
+      createHash("sha256").update(domain).digest()
+    );
+    const signingData = {
+      data: Buffer.from("{[jsonfields....]}").toString("base64"),
+      signer: publicKey,
+      domain,
+      authenticatorData,
+    };
+    const metadata = {
+      scope: ScopeType.AUTH,
+      encoding: "base64",
+    };
+    const signerResponse = await lute.signData(signingData, metadata);
+    // TODO: verify signerResponse.signature
+  } catch (err) {
+    console.error(
+      "[LuteWallet] Error signing data: " +
+        (err instanceof SignDataError
           ? `${err.message} (code: ${err.code})`
           : err.message)
     );

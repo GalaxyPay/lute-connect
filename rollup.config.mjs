@@ -7,6 +7,7 @@ export default {
     {
       file: "dist/main.cjs.js",
       format: "cjs",
+      exports: "named",
     },
     {
       file: "dist/main.esm.js",
