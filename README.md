@@ -46,7 +46,7 @@ async function connect() {
 
 ### Sign transactions
 
-```js
+```ts
 // Warning: Browser will block pop-up if user doesn't trigger lute.signTxns() with a button click
 async function signTransactions(txns) {
   try {
@@ -66,12 +66,26 @@ async function signTransactions(txns) {
 
 ### Sign data
 
-```js
+```ts
 // Warning: Browser will block pop-up if user doesn't trigger lute.signData() with a button click
 async function authenticate() {
   try {
-    const data = Buffer.from("{[jsonfields....]}").toString("base64");
-    const metadata = {
+    const siwxRequest: Siwx = {
+      domain: location.host,
+      chain_id: "283",
+      account_address: activeAccount.value.address,
+      type: "ed25519",
+      statement:
+        "Put your own statement here, for example: I accept the ExampleOrg Terms of Service.",
+      uri: location.origin,
+      version: "1",
+      nonce: Buffer.from(randomBytes(12)).toString("base64"),
+      resources: ["auth", "sign"],
+      "issued-at": new Date().toISOString(),
+    };
+
+    const data = Buffer.from(JSON.stringify(siwxRequest)).toString("base64");
+    const metadata: SignMetadata = {
       scope: ScopeType.AUTH,
       encoding: "base64",
     };
