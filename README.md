@@ -15,7 +15,7 @@ yarn add lute-connect
 ```
 
 ```sh
-pnpm i lute-connect
+pnpm add lute-connect
 ```
 
 ## API Usage

@@ -57,6 +57,22 @@ export class SignTxnsError extends Error {
   }
 }
 
+export interface Siwx {
+  domain: string;
+  account_address: string;
+  uri: string;
+  version: string;
+  statement?: string;
+  nonce?: string;
+  "issued-at"?: string;
+  "expiration-time"?: string;
+  "not-before"?: string;
+  "request-id"?: string;
+  chain_id: "283";
+  resources?: string[];
+  type: "ed25519";
+}
+
 export interface SignData {
   data: string;
   signer: Uint8Array;
