@@ -191,17 +191,14 @@ export default class LuteConnect {
     });
   }
 
-  signData(
-    signingData: SignData,
-    metadata: SignMetadata
-  ): Promise<SignDataResponse> {
+  signData(data: string, metadata: SignMetadata): Promise<SignDataResponse> {
     return new Promise(async (resolve, reject) => {
       const useExt = this.forceWeb ? false : await this.isExtensionInstalled();
       let win: any;
       if (useExt) {
         window.dispatchEvent(
           new CustomEvent("lute-connect", {
-            detail: { action: "data", signingData, metadata },
+            detail: { action: "data", data, metadata },
           })
         );
       } else {
@@ -215,7 +212,7 @@ export default class LuteConnect {
         if (detail.debug) console.log("[Lute Debug]", detail);
         switch (detail.action) {
           case "ready":
-            win?.postMessage({ action: "data", signingData, metadata }, "*");
+            win?.postMessage({ action: "data", data, metadata }, "*");
             break;
           case "signed":
             window.removeEventListener(type, messageHandler);

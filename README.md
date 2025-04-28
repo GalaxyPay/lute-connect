@@ -4,10 +4,18 @@ Lute Connect is a Javascript library to securely sign transactions with Lute, an
 
 ## Installation
 
-The package can be installed via npm:
+The package can be installed via your favorite package manager:
 
-```bash
+```sh
 npm i lute-connect
+```
+
+```sh
+yarn add lute-connect
+```
+
+```sh
+pnpm i lute-connect
 ```
 
 ## API Usage
@@ -62,22 +70,13 @@ async function signTransactions(txns) {
 // Warning: Browser will block pop-up if user doesn't trigger lute.signData() with a button click
 async function authenticate() {
   try {
-    const domain = "arc60.io";
-    const authenticatorData = new Uint8Array(
-      createHash("sha256").update(domain).digest()
-    );
-    const signingData = {
-      data: Buffer.from("{[jsonfields....]}").toString("base64"),
-      signer: publicKey,
-      domain,
-      authenticatorData,
-    };
+    const data = Buffer.from("{[jsonfields....]}").toString("base64");
     const metadata = {
       scope: ScopeType.AUTH,
       encoding: "base64",
     };
-    const signerResponse = await lute.signData(signingData, metadata);
-    // TODO: verify signerResponse.signature
+    const signerResponse = await lute.signData(data, metadata);
+    // TODO: verify signerResponse
   } catch (err) {
     console.error(
       "[LuteWallet] Error signing data: " +
