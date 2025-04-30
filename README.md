@@ -70,7 +70,7 @@ async function signTransactions(txns) {
 // Warning: Browser will block pop-up if user doesn't trigger lute.signData() with a button click
 async function authenticate() {
   try {
-    const siwxRequest: Siwx = {
+    const siwaRequest: Siwa = {
       domain: location.host,
       chain_id: "283",
       account_address: activeAccount.value.address,
@@ -83,7 +83,7 @@ async function authenticate() {
       "issued-at": new Date().toISOString(),
     };
 
-    const data = Buffer.from(JSON.stringify(siwxRequest)).toString("base64");
+    const data = Buffer.from(JSON.stringify(siwaRequest)).toString("base64");
     const metadata: SignMetadata = {
       scope: ScopeType.AUTH,
       encoding: "base64",
