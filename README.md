@@ -80,7 +80,6 @@ async function authenticate() {
       uri: location.origin,
       version: "1",
       nonce: Buffer.from(randomBytes(12)).toString("base64"),
-      resources: ["auth", "sign"],
       "issued-at": new Date().toISOString(),
     };
 

@@ -57,7 +57,7 @@ export class SignTxnsError extends Error {
   }
 }
 
-export interface Siwx {
+export interface Siwa {
   domain: string;
   account_address: string;
   uri: string;
