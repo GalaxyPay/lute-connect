@@ -4,10 +4,18 @@ Lute Connect is a Javascript library to securely sign transactions with Lute, an
 
 ## Installation
 
-The package can be installed via npm:
+The package can be installed via your favorite package manager:
 
-```bash
+```sh
 npm i lute-connect
+```
+
+```sh
+yarn add lute-connect
+```
+
+```sh
+pnpm add lute-connect
 ```
 
 ## API Usage
@@ -38,7 +46,7 @@ async function connect() {
 
 ### Sign transactions
 
-```js
+```ts
 // Warning: Browser will block pop-up if user doesn't trigger lute.signTxns() with a button click
 async function signTransactions(txns) {
   try {
@@ -58,26 +66,30 @@ async function signTransactions(txns) {
 
 ### Sign data
 
-```js
+```ts
 // Warning: Browser will block pop-up if user doesn't trigger lute.signData() with a button click
 async function authenticate() {
   try {
-    const domain = "arc60.io";
-    const authenticatorData = new Uint8Array(
-      createHash("sha256").update(domain).digest()
-    );
-    const signingData = {
-      data: Buffer.from("{[jsonfields....]}").toString("base64"),
-      signer: publicKey,
-      domain,
-      authenticatorData,
+    const siwxRequest: Siwx = {
+      domain: location.host,
+      chain_id: "283",
+      account_address: activeAccount.value.address,
+      type: "ed25519",
+      statement:
+        "Put your own statement here, for example: I accept the ExampleOrg Terms of Service.",
+      uri: location.origin,
+      version: "1",
+      nonce: Buffer.from(randomBytes(12)).toString("base64"),
+      "issued-at": new Date().toISOString(),
     };
-    const metadata = {
+
+    const data = Buffer.from(JSON.stringify(siwxRequest)).toString("base64");
+    const metadata: SignMetadata = {
       scope: ScopeType.AUTH,
       encoding: "base64",
     };
-    const signerResponse = await lute.signData(signingData, metadata);
-    // TODO: verify signerResponse.signature
+    const signerResponse = await lute.signData(data, metadata);
+    // TODO: verify signerResponse
   } catch (err) {
     console.error(
       "[LuteWallet] Error signing data: " +

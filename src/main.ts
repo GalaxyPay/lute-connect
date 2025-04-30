@@ -57,6 +57,22 @@ export class SignTxnsError extends Error {
   }
 }
 
+export interface Siwa {
+  domain: string;
+  account_address: string;
+  uri: string;
+  version: string;
+  statement?: string;
+  nonce?: string;
+  "issued-at"?: string;
+  "expiration-time"?: string;
+  "not-before"?: string;
+  "request-id"?: string;
+  chain_id: "283";
+  resources?: string[];
+  type: "ed25519";
+}
+
 export interface SignData {
   data: string;
   signer: Uint8Array;
@@ -191,17 +207,14 @@ export default class LuteConnect {
     });
   }
 
-  signData(
-    signingData: SignData,
-    metadata: SignMetadata
-  ): Promise<SignDataResponse> {
+  signData(data: string, metadata: SignMetadata): Promise<SignDataResponse> {
     return new Promise(async (resolve, reject) => {
       const useExt = this.forceWeb ? false : await this.isExtensionInstalled();
       let win: any;
       if (useExt) {
         window.dispatchEvent(
           new CustomEvent("lute-connect", {
-            detail: { action: "data", signingData, metadata },
+            detail: { action: "data", data, metadata },
           })
         );
       } else {
@@ -215,7 +228,7 @@ export default class LuteConnect {
         if (detail.debug) console.log("[Lute Debug]", detail);
         switch (detail.action) {
           case "ready":
-            win?.postMessage({ action: "data", signingData, metadata }, "*");
+            win?.postMessage({ action: "data", data, metadata }, "*");
             break;
           case "signed":
             window.removeEventListener(type, messageHandler);
