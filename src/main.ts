@@ -98,8 +98,14 @@ export interface SignMetadata {
 }
 
 export class SignDataError extends Error {
-  constructor(public readonly code: number, message: string, _data?: any) {
+  code: number;
+  data?: any;
+
+  constructor(message: string, code: number, data?: any) {
     super(message);
+    this.name = "SignDataError";
+    this.code = code;
+    this.data = data;
   }
 }
 
@@ -236,11 +242,11 @@ export default class LuteConnect {
             break;
           case "error":
             window.removeEventListener(type, messageHandler);
-            reject(new SignDataError(detail.code || 4300, detail.message));
+            reject(new SignDataError(detail.message, detail.code || 4300));
             break;
           case "close":
             window.removeEventListener(type, messageHandler);
-            reject(new SignDataError(4100, "User Rejected Request"));
+            reject(new SignDataError("User Rejected Request", 4100));
             break;
         }
       }
