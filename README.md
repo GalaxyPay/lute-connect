@@ -82,8 +82,8 @@ async function authenticate() {
       nonce: Buffer.from(randomBytes(12)).toString("base64"),
       "issued-at": new Date().toISOString(),
     };
-
-    const data = Buffer.from(JSON.stringify(siwaRequest)).toString("base64");
+    // Import or define your canonify function
+    const data = Buffer.from(canonify(siwaRequest)).toString("base64");
     const metadata: SignMetadata = {
       scope: ScopeType.AUTH,
       encoding: "base64",
