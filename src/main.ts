@@ -109,6 +109,10 @@ export class SignDataError extends Error {
   }
 }
 
+interface IWindow extends Window {
+  lute?: Boolean;
+}
+
 const left = 100 + window.screenX;
 const top = 100 + window.screenY;
 const PARAMS = `width=500,height=750,left=${left},top=${top}`;
@@ -123,19 +127,9 @@ export default class LuteConnect {
     this.siteName = siteName || document.title || "Unknown site";
   }
 
-  async isExtensionInstalled() {
-    return await fetch(`chrome-extension://${EXT_ID}/assets/icon-16.png`)
-      .then(() => {
-        return true;
-      })
-      .catch(() => {
-        return false;
-      });
-  }
-
   connect(genesisID: string): Promise<Address[]> {
     return new Promise(async (resolve, reject) => {
-      const useExt = this.forceWeb ? false : await this.isExtensionInstalled();
+      const useExt = this.forceWeb ? false : (window as IWindow).lute;
       let win: any;
       if (useExt) {
         window.dispatchEvent(
@@ -175,7 +169,7 @@ export default class LuteConnect {
 
   signTxns(txns: WalletTransaction[]): Promise<(Uint8Array | null)[]> {
     return new Promise(async (resolve, reject) => {
-      const useExt = this.forceWeb ? false : await this.isExtensionInstalled();
+      const useExt = this.forceWeb ? false : (window as IWindow).lute;
       let win: any;
       if (useExt) {
         window.dispatchEvent(
@@ -215,7 +209,7 @@ export default class LuteConnect {
 
   signData(data: string, metadata: SignMetadata): Promise<SignDataResponse> {
     return new Promise(async (resolve, reject) => {
-      const useExt = this.forceWeb ? false : await this.isExtensionInstalled();
+      const useExt = this.forceWeb ? false : (window as IWindow).lute;
       let win: any;
       if (useExt) {
         window.dispatchEvent(
