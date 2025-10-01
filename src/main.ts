@@ -117,7 +117,6 @@ const left = 100 + window.screenX;
 const top = 100 + window.screenY;
 const PARAMS = `width=500,height=750,left=${left},top=${top}`;
 export const BASE_URL = "https://lute.app";
-export const EXT_ID = "kiaoohollfkjhikdifohdckeidckokjh";
 
 export default class LuteConnect {
   siteName: string;
