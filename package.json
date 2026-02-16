@@ -1,6 +1,6 @@
 {
   "name": "lute-connect",
-  "version": "1.6.3",
+  "version": "1.7.0",
   "description": "Enables dApps to communicate with Lute, an Algorand wallet",
   "main": "./dist/main.cjs.js",
   "module": "./dist/main.esm.js",
@@ -24,9 +24,9 @@
   },
   "homepage": "https://github.com/GalaxyPay/lute-connect#readme",
   "devDependencies": {
-    "@rollup/plugin-typescript": "^11.1.6",
-    "rollup": "^4.40.0",
+    "@rollup/plugin-typescript": "^12.3.0",
+    "rollup": "^4.57.1",
     "tslib": "^2.8.1",
-    "typescript": "^5.8.3"
+    "typescript": "^5.9.3"
   }
 }

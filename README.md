@@ -57,7 +57,7 @@ async function signTransactions(txns) {
       "[LuteWallet] Error signing transactions: " +
         (err instanceof SignTxnsError
           ? `${err.message} (code: ${err.code})`
-          : err.message)
+          : err.message),
     );
     throw err;
   }
@@ -95,7 +95,35 @@ async function authenticate() {
       "[LuteWallet] Error signing data: " +
         (err instanceof SignDataError
           ? `${err.message} (code: ${err.code})`
-          : err.message)
+          : err.message),
+    );
+    throw err;
+  }
+}
+```
+
+### Add Network
+
+```ts
+// Warning: Browser will block pop-up if user doesn't trigger lute.addNetwork() with a button click
+async function addCustomNetwork() {
+  try {
+    const customNetwork: Network = {
+      name: "ExampleNet",
+      algod: {
+        url: "https://examplenet-api.4160.nodely.dev",
+        port: "",
+        token: "",
+      },
+      genesisID: "examplenet-v1.0",
+    };
+    await lute.addNetwork(customNetwork);
+  } catch (err) {
+    console.error(
+      "[LuteWallet] Error adding network: " +
+        (err instanceof AddNetworkError
+          ? `${err.message} (code: ${err.code})`
+          : err.message),
     );
     throw err;
   }
