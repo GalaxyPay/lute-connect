@@ -4,9 +4,10 @@ import {
   IWindow,
   Network,
   SignDataError,
-  SignDataResponse,
-  SignMetadata,
   SignTxnsError,
+  StdSignData,
+  StdSignDataResponse,
+  StdSignMetadata,
   WalletTransaction,
 } from "./types";
 
@@ -103,14 +104,17 @@ export default class LuteConnect {
     });
   }
 
-  signData(data: string, metadata: SignMetadata): Promise<SignDataResponse> {
+  signData(
+    data: StdSignData,
+    metadata: StdSignMetadata,
+  ): Promise<StdSignDataResponse> {
     return new Promise(async (resolve, reject) => {
       const useExt = this.forceWeb ? false : (window as IWindow).lute;
       let win: any;
       if (useExt) {
         window.dispatchEvent(
           new CustomEvent("lute-connect", {
-            detail: { action: "data", data, metadata },
+            detail: { action: "data", stdSignData: data, metadata },
           }),
         );
       } else {
@@ -124,7 +128,10 @@ export default class LuteConnect {
         if (detail.debug) console.log("[Lute Debug]", detail);
         switch (detail.action) {
           case "ready":
-            win?.postMessage({ action: "data", data, metadata }, "*");
+            win?.postMessage(
+              { action: "data", stdSignData: data, metadata },
+              "*",
+            );
             break;
           case "signed":
             window.removeEventListener(type, messageHandler);
