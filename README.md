@@ -68,12 +68,17 @@ async function signTransactions(txns) {
 
 ```ts
 // Warning: Browser will block pop-up if user doesn't trigger lute.signData() with a button click
+import { Address } from "algosdk";
+import { canonify } from "canonify";
+
 async function authenticate() {
   try {
+    const domain = location.host;
+    const acctInfo = await algodClient.accountInformation(activeAddress).do();
     const siwaRequest: Siwa = {
-      domain: location.host,
-      chain_id: "283",
-      account_address: activeAccount.value.address,
+      domain,
+      chain_id: activeNetworkConfig.caipChainId || "algorand",
+      account_address: activeAddress,
       type: "ed25519",
       statement:
         "Put your own statement here, for example: I accept the ExampleOrg Terms of Service.",
@@ -82,13 +87,25 @@ async function authenticate() {
       nonce: Buffer.from(randomBytes(12)).toString("base64"),
       "issued-at": new Date().toISOString(),
     };
-    // Import or define your canonify function
-    const data = Buffer.from(canonify(siwaRequest)).toString("base64");
+    const dataString = canonify(siwaRequest);
+    if (!dataString) throw Error("Invalid JSON");
+    const data = btoa(dataString);
+    const enc = new TextEncoder();
+    const authenticatorData = await sha256(enc.encode(domain));
+    const signer =
+      acctInfo.authAddr?.publicKey ??
+      Address.fromString(activeAddress).publicKey;
+    const sdtSignData: StdSignData = {
+      data,
+      signer,
+      domain,
+      authenticatorData,
+    };
     const metadata: SignMetadata = {
       scope: ScopeType.AUTH,
       encoding: "base64",
     };
-    const signerResponse = await lute.signData(data, metadata);
+    const signerResponse = await lute.signData(sdtSignData, metadata);
     // TODO: verify signerResponse
   } catch (err) {
     console.error(
