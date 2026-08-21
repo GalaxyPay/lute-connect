@@ -1,32 +1,46 @@
 {
-  "name": "lute-connect",
-  "version": "2.0.1",
+  "name": "@galaxypay/lute-connect",
+  "version": "3.0.1",
   "description": "Enables dApps to communicate with Lute, an Algorand wallet",
-  "main": "./dist/main.cjs.js",
-  "module": "./dist/main.esm.js",
-  "types": "./dist/main.d.ts",
-  "scripts": {
-    "build": "rollup --config"
-  },
+  "author": "Andrew Funk",
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/GalaxyPay/lute-connect.git"
+  },
+  "bugs": {
+    "url": "https://github.com/GalaxyPay/lute-connect/issues"
+  },
+  "homepage": "https://github.com/GalaxyPay/lute-connect#readme",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
+    }
+  },
+  "scripts": {
+    "build": "tsdown"
   },
   "keywords": [
     "algorand",
     "ledger",
     "wallet"
   ],
-  "author": "Andrew Funk",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/GalaxyPay/lute-connect/issues"
-  },
-  "homepage": "https://github.com/GalaxyPay/lute-connect#readme",
+  "files": [
+    "dist"
+  ],
   "devDependencies": {
-    "@rollup/plugin-typescript": "^12.3.0",
-    "rollup": "^4.57.1",
-    "tslib": "^2.8.1",
+    "tsdown": "0.22.14",
     "typescript": "^5.9.3"
   }
 }
