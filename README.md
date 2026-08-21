@@ -7,15 +7,15 @@ Lute Connect is a Javascript library to securely sign transactions with Lute, an
 The package can be installed via your favorite package manager:
 
 ```sh
-npm i lute-connect
+npm i @galaxypay/lute-connect
 ```
 
 ```sh
-yarn add lute-connect
+yarn add @galaxypay/lute-connect
 ```
 
 ```sh
-pnpm add lute-connect
+pnpm add @galaxypay/lute-connect
 ```
 
 ## API Usage
@@ -23,7 +23,7 @@ pnpm add lute-connect
 ### Quick start
 
 ```js
-import LuteConnect from "lute-connect";
+import LuteConnect from "@galaxypay/lute-connect";
 const lute = new LuteConnect();
 ```
 
