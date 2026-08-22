@@ -1,3 +1,8 @@
+# lute-connect
+
+[![npm version](https://img.shields.io/npm/v/@galaxypay/lute-connect)](https://www.npmjs.com/package/@galaxypay/lute-connect)
+[![License](https://img.shields.io/github/license/GalaxyPay/lute-connect)](https://github.com/GalaxyPay/lute-connect/blob/main/LICENSE)
+
 ## Overview
 
 Lute Connect is a Javascript library to securely sign transactions with Lute, an Algorand [web wallet](https://lute.app) and [Chrome extension](https://chromewebstore.google.com/detail/lute/kiaoohollfkjhikdifohdckeidckokjh).
