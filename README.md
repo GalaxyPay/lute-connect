@@ -82,7 +82,7 @@ async function authenticate() {
     const acctInfo = await algodClient.accountInformation(activeAddress).do();
     const siwaRequest: Siwa = {
       domain,
-      chain_id: activeNetworkConfig.caipChainId || "algorand",
+      chain_id: activeNetworkConfig.caipChainId || "algorand:localnet",
       account_address: activeAddress,
       type: "ed25519",
       statement:
