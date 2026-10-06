@@ -1,3 +1,8 @@
+# lute-connect
+
+[![npm version](https://img.shields.io/npm/v/@galaxypay/lute-connect)](https://www.npmjs.com/package/@galaxypay/lute-connect)
+[![License](https://img.shields.io/github/license/GalaxyPay/lute-connect)](https://github.com/GalaxyPay/lute-connect/blob/main/LICENSE)
+
 ## Overview
 
 Lute Connect is a Javascript library to securely sign transactions with Lute, an Algorand [web wallet](https://lute.app) and [Chrome extension](https://chromewebstore.google.com/detail/lute/kiaoohollfkjhikdifohdckeidckokjh).
@@ -44,6 +49,17 @@ async function connect() {
 }
 ```
 
+To also learn how each account signs, use `connectAccounts`. It returns the
+addresses plus each account's empty signature: base64 of the canonical msgpack
+encoding of a `SignedTransaction` without `txn`, with placeholder signature
+bytes. Use them to simulate fees with correctly shaped signatures, for example
+for Falcon (post-quantum) and multisig accounts. An address missing from
+`emptySignatures` is of unknown type.
+
+```js
+const { addrs, emptySignatures } = await lute.connectAccounts(genesisID);
+```
+
 ### Sign transactions
 
 ```ts
@@ -77,7 +93,7 @@ async function authenticate() {
     const acctInfo = await algodClient.accountInformation(activeAddress).do();
     const siwaRequest: Siwa = {
       domain,
-      chain_id: activeNetworkConfig.caipChainId || "algorand",
+      chain_id: activeNetworkConfig.caipChainId || "algorand:localnet",
       account_address: activeAddress,
       type: "ed25519",
       statement:
