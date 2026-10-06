@@ -1,6 +1,7 @@
 import {
   AddNetworkError,
   Address,
+  ConnectResult,
   IWindow,
   Network,
   SignDataError,
@@ -26,7 +27,16 @@ export default class LuteConnect {
     this.siteName = siteName || document.title || "Unknown site";
   }
 
-  connect(genesisID: string): Promise<Address[]> {
+  /** Requests account access and returns the connected addresses. */
+  async connect(genesisID: string): Promise<Address[]> {
+    return (await this.connectAccounts(genesisID)).addrs;
+  }
+
+  /**
+   * Like connect(), but also returns each account's empty signature, so a
+   * dapp can simulate fees with correctly shaped signatures.
+   */
+  connectAccounts(genesisID: string): Promise<ConnectResult> {
     return new Promise(async (resolve, reject) => {
       const useExt = this.forceWeb ? false : (window as IWindow).lute;
       let win: any;
@@ -51,7 +61,10 @@ export default class LuteConnect {
             break;
           case "connect":
             window.removeEventListener(type, messageHandler);
-            resolve(data.addrs);
+            resolve({
+              addrs: data.addrs,
+              emptySignatures: data.emptySignatures ?? {},
+            });
             break;
           case "error":
             window.removeEventListener(type, messageHandler);
@@ -66,6 +79,7 @@ export default class LuteConnect {
     });
   }
 
+  /** Asks the user to sign transactions */
   signTxns(txns: WalletTransaction[]): Promise<(Uint8Array | null)[]> {
     return new Promise(async (resolve, reject) => {
       const useExt = this.forceWeb ? false : (window as IWindow).lute;
@@ -106,6 +120,7 @@ export default class LuteConnect {
     });
   }
 
+  /** Asks the user to sign arbitrary data, e.g. for authentication. */
   signData(
     data: StdSignData,
     metadata: StdSignMetadata,
@@ -152,6 +167,7 @@ export default class LuteConnect {
     });
   }
 
+  /** Asks the user to add a custom network to their wallet. */
   addNetwork(network: Network): Promise<void> {
     return new Promise(async (resolve, reject) => {
       const useExt = this.forceWeb ? false : (window as IWindow).lute;

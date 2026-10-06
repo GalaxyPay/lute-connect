@@ -49,6 +49,17 @@ async function connect() {
 }
 ```
 
+To also learn how each account signs, use `connectAccounts`. It returns the
+addresses plus each account's empty signature: base64 of the canonical msgpack
+encoding of a `SignedTransaction` without `txn`, with placeholder signature
+bytes. Use them to simulate fees with correctly shaped signatures, for example
+for Falcon (post-quantum) and multisig accounts. An address missing from
+`emptySignatures` is of unknown type.
+
+```js
+const { addrs, emptySignatures } = await lute.connectAccounts(genesisID);
+```
+
 ### Sign transactions
 
 ```ts

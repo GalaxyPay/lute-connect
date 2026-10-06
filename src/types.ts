@@ -3,6 +3,23 @@ export type Base64 = string;
 export type TxnStr = Base64;
 export type SignedTxnStr = Base64;
 
+/**
+ * Base64 of the canonical msgpack encoding of a SignedTransaction with the
+ * `txn` field removed, carrying placeholder signature bytes: how an account
+ * signs, for simulating fees. A single ed25519 key is an empty map ("gA==").
+ */
+export type EmptySignature = Base64;
+
+export interface ConnectResult {
+  // Addresses the user chose to connect
+  addrs: Address[];
+
+  // Empty signature of each connected address that Lute can describe. An
+  // address missing here is of unknown type. Empty with a Lute version that
+  // does not send them.
+  emptySignatures: Record<Address, EmptySignature>;
+}
+
 export interface MultisigMetadata {
   // Multisig version
   version: number;
