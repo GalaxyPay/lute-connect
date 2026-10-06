@@ -87,7 +87,7 @@ export interface Siwa {
   "request-id"?: string;
   chain_id: string;
   resources?: string[];
-  type: "ed25519";
+  type: "ed25519" | "falcon1024";
 }
 
 export interface StdSignData {
