@@ -135,6 +135,26 @@ async function authenticate() {
 }
 ```
 
+#### Falcon-1024 accounts
+
+A Falcon address is a hash of its public key, so the dApp must send the key itself. Take it from the account's empty signature in the connect result (`pqsig.pk`), and set `type: "falcon1024"`:
+
+```ts
+import algosdk from "algosdk";
+import { verifyCompressed } from "falcon-1024";
+
+const { pqsig } = algosdk.decodeSignedTransaction(/* emptySignatures[addr] with a placeholder txn */);
+const siwaRequest: Siwa = { ...siwa, type: "falcon1024" };
+const sdtSignData: StdSignData = { data, signer: pqsig.pk, domain, authenticatorData };
+const resp = await lute.signData(sdtSignData, metadata);
+
+// Verify: the key must hash to the address (or its auth address), and the
+// signature must cover sha256(data) || sha256(authenticatorData).
+const { address } = algosdk.addressFromPQKey(algosdk.FALCON_1024_SCHEME, resp.signer);
+const toSign = new Uint8Array([...(await sha256(enc.encode(dataString))), ...(await sha256(authenticatorData))]);
+const ok = address.toString() === activeAddress && verifyCompressed(resp.signer, resp.signature, toSign);
+```
+
 ### Add Network
 
 ```ts
