@@ -32,6 +32,8 @@ import LuteConnect from "@galaxypay/lute-connect";
 const lute = new LuteConnect();
 ```
 
+Web mode (no extension, or `forceWeb`) opens a popup to lute.app. If your site sends `Cross-Origin-Opener-Policy`, use `same-origin-allow-popups`; `same-origin` blocks the popup from replying.
+
 ### Connect to Lute
 
 ```js
