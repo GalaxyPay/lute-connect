@@ -87,7 +87,7 @@ export interface Siwa {
   "request-id"?: string;
   chain_id: string;
   resources?: string[];
-  type: "ed25519" | "falcon1024";
+  type: "ed25519" | "falcon-1024-det";
 }
 
 export interface StdSignData {
@@ -97,6 +97,7 @@ export interface StdSignData {
   authenticatorData: Uint8Array;
   requestId?: string;
   hdPath?: string;
+  scheme?: string;
 }
 
 export interface StdSignDataResponse extends StdSignData {
