@@ -101,7 +101,7 @@ export default class LuteConnect {
         switch (data.action) {
           case "ready":
             ready = true;
-            win?.postMessage({ action: "network", genesisID }, "*");
+            win?.postMessage({ action: "network", genesisID }, BASE_URL);
             break;
           case "connect":
             done();
@@ -155,7 +155,7 @@ export default class LuteConnect {
         switch (detail.action) {
           case "ready":
             ready = true;
-            win?.postMessage({ action: "sign", txns }, "*");
+            win?.postMessage({ action: "sign", txns }, BASE_URL);
             break;
           case "signed":
             done();
@@ -211,7 +211,7 @@ export default class LuteConnect {
             ready = true;
             win?.postMessage(
               { action: "data", stdSignData: data, metadata },
-              "*",
+              BASE_URL,
             );
             break;
           case "signed":
@@ -253,7 +253,7 @@ export default class LuteConnect {
         switch (detail.action) {
           case "ready":
             ready = true;
-            win?.postMessage({ action: "network", network }, "*");
+            win?.postMessage({ action: "network", network }, BASE_URL);
             break;
           case "added":
             done();
